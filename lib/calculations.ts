@@ -1,4 +1,18 @@
 import { Transaction, MonthlyData, CategoryData, DashboardStats, categoryColors } from '@/types/transaction';
+import { getISTDateString } from '@/lib/utils';
+
+function extractYearMonth(dateVal: any): [number, number] {
+  let dateStr = '';
+  if (dateVal instanceof Date) {
+    dateStr = getISTDateString(dateVal);
+  } else if (typeof dateVal === 'string') {
+    dateStr = dateVal.includes('T') ? dateVal.split('T')[0] : dateVal;
+  } else {
+    dateStr = getISTDateString(new Date(String(dateVal)));
+  }
+  const [y, m] = dateStr.split('-').map(Number);
+  return [y, m];
+}
 
 export function calculateTotalIncome(transactions: Transaction[]): number {
   return transactions
@@ -37,8 +51,8 @@ export function getMonthlySpending(transactions: Transaction[]): MonthlyData[] {
   );
 
   sortedTransactions.forEach((t) => {
-    const [year, month] = t.date.split('-');
-    const key = `${year}-${month}`;
+    const [year, month] = extractYearMonth(t.date);
+    const key = `${year}-${String(month).padStart(2, '0')}`;
 
     if (!monthlyData[key]) {
       monthlyData[key] = { income: 0, expense: 0 };
@@ -129,7 +143,7 @@ export function compareMonths(
   const currentMonthExpenses = transactions
     .filter((t) => {
       if (t.type !== 'expense') return false;
-      const [y, m] = t.date.split('-').map(Number);
+      const [y, m] = extractYearMonth(t.date);
       return y === currentYear && m === currentMonth;
     })
     .reduce((sum, t) => sum + t.amount, 0);
@@ -137,7 +151,7 @@ export function compareMonths(
   const previousMonthExpenses = transactions
     .filter((t) => {
       if (t.type !== 'expense') return false;
-      const [y, m] = t.date.split('-').map(Number);
+      const [y, m] = extractYearMonth(t.date);
       return y === previousYear && m === previousMonth;
     })
     .reduce((sum, t) => sum + t.amount, 0);

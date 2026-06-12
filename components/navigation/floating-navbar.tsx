@@ -131,7 +131,7 @@ export function FloatingNavbar() {
             </Link>
 
             <Sheet>
-              <SheetTrigger>
+              <SheetTrigger asChild>
                 <Button variant="ghost" size="icon" className="text-foreground">
                   <Menu className="h-5 w-5" />
                 </Button>
