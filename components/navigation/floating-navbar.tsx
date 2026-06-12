@@ -7,7 +7,7 @@ import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { LayoutDashboard, ArrowLeftRight, PieChart, Lightbulb, Plus, Menu, Sun, Moon } from 'lucide-react';
 import { useTheme } from 'next-themes';
-import { Button } from '@/components/ui/button';
+
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 
 const navItems = [
@@ -45,13 +45,13 @@ export function FloatingNavbar() {
         <motion.div
           id="tour-nav"
           className={cn(
-            'relative flex items-center gap-1 rounded-full px-2 py-2',
+            'relative isolate flex items-center gap-1 rounded-full px-2 py-2',
             'bg-background/80 backdrop-blur-xl border border-border/50',
             'shadow-2xl shadow-black/10 dark:shadow-black/50 transition-all duration-300',
             scrolled && 'bg-background/95 border-border'
           )}
         >
-          <div className="absolute -inset-2 rounded-full bg-gradient-to-r from-cyan-500/20 via-blue-500/20 to-transparent opacity-50 blur-xl" />
+          <div className="pointer-events-none absolute -inset-2 -z-10 rounded-full bg-gradient-to-r from-cyan-500/20 via-blue-500/20 to-transparent opacity-50 blur-xl" />
 
           <Link href="/" className="relative z-10 flex items-center gap-2 px-3">
             <div className="relative h-8 w-8">
@@ -96,7 +96,7 @@ export function FloatingNavbar() {
             onClick={() => router.push('/add-transaction')}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="flex items-center gap-2 rounded-full px-4 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-sm font-medium text-white shadow-lg shadow-cyan-500/25 cursor-pointer"
+            className="relative z-10 flex items-center gap-2 rounded-full px-4 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-sm font-medium text-white shadow-lg shadow-cyan-500/25 cursor-pointer border-none"
           >
             <Plus className="h-4 w-4" />
             Add
@@ -126,17 +126,18 @@ export function FloatingNavbar() {
           </Link>
 
           <div className="flex items-center gap-2">
-            <Button 
-              size="sm" 
-              className="bg-gradient-to-r from-cyan-500 to-blue-600 shadow-lg shadow-cyan-500/25"
+            <button
               onClick={() => router.push('/add-transaction')}
+              className="inline-flex items-center gap-1 rounded-lg px-3 py-1.5 text-sm font-medium text-white bg-gradient-to-r from-cyan-500 to-blue-600 shadow-lg shadow-cyan-500/25 transition-transform active:scale-95 border-none"
             >
-              <Plus className="h-4 w-4 mr-1" />
+              <Plus className="h-4 w-4" />
               Add
-            </Button>
+            </button>
 
             <Sheet>
-              <SheetTrigger render={<Button variant="ghost" size="icon" className="text-foreground" />}>
+              <SheetTrigger
+                className="inline-flex items-center justify-center rounded-lg p-2 text-foreground hover:bg-muted transition-colors"
+              >
                 <Menu className="h-5 w-5" />
               </SheetTrigger>
               <SheetContent side="right" className="w-72 bg-background border-border">
