@@ -71,12 +71,15 @@ export function TransactionForm() {
         
         // Ensure date is in YYYY-MM-DD format for the input[type="date"]
         let formattedDate = '';
-        if (transaction.date instanceof Date) {
+        if (typeof transaction.date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(transaction.date)) {
+          // Fix: Avoid browser timezone shifts by using pure YYYY-MM-DD strings directly.
+          formattedDate = transaction.date;
+        } else if (transaction.date instanceof Date) {
           formattedDate = getISTDateString(transaction.date as Date);
         } else if (typeof transaction.date === 'string') {
-          formattedDate = transaction.date.includes('T') 
-            ? transaction.date.split('T')[0] 
-            : getISTDateString(new Date(transaction.date));
+          // If it's an ISO string or other format, safely parse it to IST
+          // We avoid split('T')[0] because an ISO string might represent a different day in IST
+          formattedDate = getISTDateString(new Date(transaction.date));
         } else {
           // fallback
           formattedDate = getISTDateString(new Date(String(transaction.date)));

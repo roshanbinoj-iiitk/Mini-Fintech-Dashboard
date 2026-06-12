@@ -6,7 +6,11 @@ function extractYearMonth(dateVal: any): [number, number] {
   if (dateVal instanceof Date) {
     dateStr = getISTDateString(dateVal);
   } else if (typeof dateVal === 'string') {
-    dateStr = dateVal.includes('T') ? dateVal.split('T')[0] : dateVal;
+    if (/^\d{4}-\d{2}-\d{2}$/.test(dateVal)) {
+      dateStr = dateVal;
+    } else {
+      dateStr = getISTDateString(new Date(dateVal));
+    }
   } else {
     dateStr = getISTDateString(new Date(String(dateVal)));
   }
