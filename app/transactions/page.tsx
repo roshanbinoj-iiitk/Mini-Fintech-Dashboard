@@ -1,5 +1,5 @@
 import { Suspense } from 'react';
-import { getTransactions } from '@/actions/transaction-actions';
+import { getPaginatedTransactions, getCategories } from '@/actions/transaction-actions';
 import { TransactionFilters } from '@/components/transactions/transaction-filters';
 import { GridBackground } from '@/components/aceternity/grid-background';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -28,8 +28,24 @@ function LoadingTransactions() {
   );
 }
 
-export default async function TransactionsPage() {
-  const transactions = await getTransactions();
+export default async function TransactionsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}) {
+  const params = await searchParams;
+  const search = typeof params.search === 'string' ? params.search : undefined;
+  const type = typeof params.type === 'string' ? params.type : undefined;
+  const category = typeof params.category === 'string' ? params.category : undefined;
+  const sortBy = typeof params.sortBy === 'string' ? params.sortBy : undefined;
+  const page = typeof params.page === 'string' ? parseInt(params.page) : 1;
+  const startDate = typeof params.startDate === 'string' ? params.startDate : undefined;
+  const endDate = typeof params.endDate === 'string' ? params.endDate : undefined;
+
+  const [paginatedData, categories] = await Promise.all([
+    getPaginatedTransactions({ search, type, category, sortBy, page, limit: 10, startDate, endDate }),
+    getCategories()
+  ]);
 
   return (
     <div className="min-h-screen pt-24 pb-12">
@@ -39,8 +55,14 @@ export default async function TransactionsPage() {
           <h1 className="text-3xl font-bold text-foreground">Transactions</h1>
           <p className="text-muted-foreground">View and manage all your transactions</p>
         </div>
-        <Suspense fallback={<LoadingTransactions />}>
-          <TransactionFilters transactions={transactions} />
+        <Suspense fallback={<LoadingTransactions />} key={`${search}-${type}-${category}-${sortBy}-${page}-${startDate}-${endDate}`}>
+          <TransactionFilters 
+            transactions={paginatedData.transactions} 
+            categories={categories} 
+            totalPages={paginatedData.totalPages}
+            currentPage={paginatedData.currentPage}
+            totalCount={paginatedData.totalCount}
+          />
         </Suspense>
       </div>
     </div>

@@ -14,10 +14,43 @@ const transactionSchema = z.object({
   note: z.string().max(500).optional(),
 });
 
-export async function getTransactions() {
+export async function getTransactions(params?: {
+  search?: string;
+  type?: string;
+  category?: string;
+  sortBy?: string;
+}) {
   try {
     await connectToDatabase();
-    const data = await Transaction.find().sort({ date: -1 }).lean();
+    
+    let query: any = {};
+    
+    if (params?.search) {
+      query.$or = [
+        { category: { $regex: params.search, $options: 'i' } },
+        { note: { $regex: params.search, $options: 'i' } }
+      ];
+    }
+    
+    if (params?.type && params.type !== 'all') {
+      query.type = params.type;
+    }
+    
+    if (params?.category && params.category !== 'all') {
+      query.category = params.category;
+    }
+
+    let sortOption: any = { date: -1, createdAt: -1 };
+    if (params?.sortBy) {
+      switch (params.sortBy) {
+        case 'latest': sortOption = { date: -1, createdAt: -1 }; break;
+        case 'oldest': sortOption = { date: 1, createdAt: 1 }; break;
+        case 'highest': sortOption = { amount: -1, createdAt: -1 }; break;
+        case 'lowest': sortOption = { amount: 1, createdAt: -1 }; break;
+      }
+    }
+
+    const data = await Transaction.find(query).sort(sortOption).lean();
 
     // Map _id to id and sort out mongoose artifacts
     return data.map((doc: any) => {
@@ -29,6 +62,97 @@ export async function getTransactions() {
     });
   } catch (error) {
     console.error('Error fetching transactions:', error);
+    return [];
+  }
+}
+
+export async function getPaginatedTransactions(params?: {
+  search?: string;
+  type?: string;
+  category?: string;
+  sortBy?: string;
+  page?: number;
+  limit?: number;
+  startDate?: string;
+  endDate?: string;
+}) {
+  try {
+    await connectToDatabase();
+    
+    let query: any = {};
+    
+    if (params?.search) {
+      query.$or = [
+        { category: { $regex: params.search, $options: 'i' } },
+        { note: { $regex: params.search, $options: 'i' } }
+      ];
+    }
+    
+    if (params?.type && params.type !== 'all') {
+      query.type = params.type;
+    }
+    
+    if (params?.category && params.category !== 'all') {
+      query.category = params.category;
+    }
+
+    if (params?.startDate || params?.endDate) {
+      query.date = {};
+      if (params.startDate) query.date.$gte = params.startDate;
+      if (params.endDate) query.date.$lte = params.endDate;
+    }
+
+    let sortOption: any = { date: -1, createdAt: -1 };
+    if (params?.sortBy) {
+      switch (params.sortBy) {
+        case 'latest': sortOption = { date: -1, createdAt: -1 }; break;
+        case 'oldest': sortOption = { date: 1, createdAt: 1 }; break;
+        case 'highest': sortOption = { amount: -1, createdAt: -1 }; break;
+        case 'lowest': sortOption = { amount: 1, createdAt: -1 }; break;
+      }
+    }
+
+    const page = params?.page || 1;
+    const limit = params?.limit || 10;
+    const skip = (page - 1) * limit;
+
+    const [data, totalCount] = await Promise.all([
+      Transaction.find(query).sort(sortOption).skip(skip).limit(limit).lean(),
+      Transaction.countDocuments(query)
+    ]);
+
+    const totalPages = Math.ceil(totalCount / limit);
+
+    return {
+      transactions: data.map((doc: any) => {
+        const { _id, __v, ...rest } = doc;
+        return {
+          id: _id.toString(),
+          ...rest,
+        };
+      }),
+      totalPages,
+      currentPage: page,
+      totalCount
+    };
+  } catch (error) {
+    console.error('Error fetching paginated transactions:', error);
+    return {
+      transactions: [],
+      totalPages: 0,
+      currentPage: 1,
+      totalCount: 0
+    };
+  }
+}
+
+export async function getCategories() {
+  try {
+    await connectToDatabase();
+    const categories = await Transaction.distinct('category');
+    return categories.sort();
+  } catch (error) {
+    console.error('Error fetching categories:', error);
     return [];
   }
 }
