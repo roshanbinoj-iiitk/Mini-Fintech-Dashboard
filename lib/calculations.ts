@@ -109,14 +109,32 @@ export function getCategoryBreakdown(transactions: Transaction[]): CategoryData[
     categoryTotals[t.category] = (categoryTotals[t.category] || 0) + t.amount;
   });
 
-  return Object.entries(categoryTotals)
-    .map(([category, amount]) => ({
+  const fallbackColors = [
+    '#f87171', '#fb923c', '#fbbf24', '#34d399', '#2dd4bf', 
+    '#38bdf8', '#818cf8', '#a78bfa', '#e879f9', '#f472b6', 
+    '#fb7185', '#a3e635', '#4ade80', '#60a5fa', '#c084fc',
+    '#e11d48', '#d97706', '#059669', '#0284c7', '#4f46e5'
+  ];
+
+  // Sort first so color assignment is deterministic by size
+  const sortedCategories = Object.entries(categoryTotals)
+    .sort((a, b) => b[1] - a[1]);
+
+  let fallbackIndex = 0;
+
+  return sortedCategories.map(([category, amount]) => {
+    let color = categoryColors[category];
+    if (!color) {
+      color = fallbackColors[fallbackIndex % fallbackColors.length];
+      fallbackIndex++;
+    }
+    return {
       category,
       amount,
       percentage: (amount / totalExpense) * 100,
-      color: categoryColors[category] || '#71717a',
-    }))
-    .sort((a, b) => b.amount - a.amount);
+      color,
+    };
+  });
 }
 
 export function getDashboardStats(transactions: Transaction[]): DashboardStats {

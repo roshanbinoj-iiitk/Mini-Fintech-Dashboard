@@ -41,7 +41,7 @@ export function AnalyticsCharts({ transactions }: AnalyticsChartsProps) {
                     cy="50%"
                     innerRadius={65}
                     outerRadius={100}
-                    paddingAngle={4}
+                    paddingAngle={0}
                     dataKey="amount"
                     nameKey="category"
                     stroke="none"
@@ -50,8 +50,7 @@ export function AnalyticsCharts({ transactions }: AnalyticsChartsProps) {
                       <Cell 
                         key={`cell-${index}`} 
                         fill={entry.color} 
-                        stroke={isDark ? '#09090b' : '#ffffff'} 
-                        strokeWidth={2} 
+                        stroke="none"
                         className="transition-all duration-300 hover:opacity-80"
                       />
                     ))}
