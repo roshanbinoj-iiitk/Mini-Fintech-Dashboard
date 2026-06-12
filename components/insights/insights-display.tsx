@@ -35,10 +35,14 @@ export function InsightsDisplay({ transactions }: InsightsDisplayProps) {
   const [lastGenerated, setLastGenerated] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
+  const currentHash = `${transactions.length}-${calculateTotalExpense(transactions)}`;
+
   useEffect(() => {
     const cached = localStorage.getItem('ai_insights_cache');
     const cachedTime = localStorage.getItem('ai_insights_timestamp');
-    if (cached) {
+    const cachedHash = localStorage.getItem('ai_insights_hash');
+
+    if (cached && cachedHash === currentHash) {
       try {
         // eslint-disable-next-line react-hooks/set-state-in-effect
         setAiResponse(JSON.parse(cached));
@@ -49,8 +53,16 @@ export function InsightsDisplay({ transactions }: InsightsDisplayProps) {
       } catch (_e) {
         console.error('Failed to parse cached insights');
       }
+    } else {
+      localStorage.removeItem('ai_insights_cache');
+      localStorage.removeItem('ai_insights_timestamp');
+      localStorage.removeItem('ai_insights_hash');
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setAiResponse(null);
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setLastGenerated(null);
     }
-  }, []);
+  }, [currentHash]);
 
   const handleGenerate = async () => {
     if (transactions.length === 0) return;
@@ -93,6 +105,7 @@ export function InsightsDisplay({ transactions }: InsightsDisplayProps) {
       setLastGenerated(now);
       localStorage.setItem('ai_insights_cache', JSON.stringify(data));
       localStorage.setItem('ai_insights_timestamp', now);
+      localStorage.setItem('ai_insights_hash', currentHash);
     } catch (err) {
       console.error(err);
       setError('An error occurred while generating insights. Please try again.');
