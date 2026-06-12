@@ -11,7 +11,7 @@ A premium, production-quality Personal Finance Tracker built with Next.js 15, fe
 - **Beautiful UI** - Aceternity UI components with Aurora backgrounds, spotlight effects, and micro-interactions
 - **Dark Mode** - Full theme support with next-themes
 - **Responsive Design** - Optimized for mobile and desktop with floating navigation
-- **Supabase Backend** - PostgreSQL database with Row Level Security
+- **MongoDB Backend** - Fast and flexible NoSQL database with Mongoose ORM
 
 ## Tech Stack
 
@@ -27,41 +27,36 @@ A premium, production-quality Personal Finance Tracker built with Next.js 15, fe
 
 ## Architecture
 
-```
+```text
 User Interface (React Components)
          |
          v
    Server Actions (Next.js)
          |
          v
-   Supabase Client
+    Mongoose ORM
          |
          v
-   PostgreSQL Database
+   MongoDB Database
 ```
 
 ## Database Schema
 
-### Transactions Table
+### Transaction Model (Mongoose)
 
-```sql
-CREATE TABLE transactions (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  amount DECIMAL(12,2) NOT NULL CHECK (amount > 0),
-  category TEXT NOT NULL,
-  type TEXT NOT NULL CHECK (type IN ('income', 'expense')),
-  date DATE NOT NULL DEFAULT CURRENT_DATE,
-  note TEXT,
-  created_at TIMESTAMPTZ DEFAULT NOW(),
-  updated_at TIMESTAMPTZ DEFAULT NOW()
-);
+```typescript
+const TransactionSchema = new mongoose.Schema({
+  amount: { type: Number, required: true },
+  category: { type: String, required: true },
+  type: { type: String, enum: ['income', 'expense'], required: true },
+  date: { type: String, required: true },
+  note: { type: String },
+}, { timestamps: true });
 ```
 
 ### Indexes
 
-- `date` (descending) - For chronological queries
-- `type` - For filtering by income/expense
-- `category` - For category-based analytics
+- `date` (descending) - Default sort for chronologically retrieving transactions
 
 ## Getting Started
 
@@ -73,19 +68,18 @@ cd fintrack
 npm install
 ```
 
-### 2. Set Up Supabase
+### 2. Set Up MongoDB
 
-1. Create a project at [Supabase](https://supabase.com)
-2. The database table is already created via the migration
-3. Get your project URL and anon key from Settings > API
+1. Create a cluster at [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) or run MongoDB locally
+2. Create a database user and get your connection string
+3. No manual migrations needed; Mongoose handles the schema automatically
 
 ### 3. Environment Variables
 
 Create a `.env.local` file in the root directory:
 
 ```env
-NEXT_PUBLIC_SUPABASE_URL=your-project-url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+MONGODB_URI=your-mongodb-connection-string
 ```
 
 ### 4. Run Development Server
@@ -124,9 +118,11 @@ components/
 ├── navigation/              # Navigation components
 └── ui/                      # shadcn/ui components
 
+models/
+└── Transaction.ts           # Mongoose schema and model
+
 lib/
-├── supabase.ts              # Supabase client
-├── supabase-server.ts       # Server-side Supabase client
+├── mongodb.ts               # MongoDB connection utility
 ├── calculations.ts          # Financial calculations
 ├── insights.ts              # Insight generation
 └── utils.ts                 # Utility functions
@@ -171,7 +167,7 @@ types/
 
 1. Push code to GitHub
 2. Import project on [Vercel](https://vercel.com)
-3. Add `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` to Environment Variables
+3. Add `MONGODB_URI` to Environment Variables
 4. Deploy
 
 ## Performance
@@ -180,7 +176,7 @@ types/
 - Dynamic imports for heavy charts
 - Memoized calculations
 - Optimized Framer Motion animations
-- Supabase connection pooling
+- MongoDB connection pooling via Mongoose
 
 ## License
 
