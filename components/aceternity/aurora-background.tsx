@@ -34,7 +34,7 @@ export function AuroraBackground({
             'animate-aurora',
             'after:content-[""] after:absolute after:inset-0',
             'after:[background-image:var(--aurora)] after:[background-size:200%_100%]',
-            'after:[background-position:50%_50%] after:mix-blend-difference after:blur-[40px]',
+            'after:[background-position:50%_50%] dark:after:mix-blend-difference after:blur-[40px]',
             'after:animate-aurora after:opacity-60'
           )}
           style={
@@ -51,7 +51,8 @@ export function AuroraBackground({
         <div
           className={cn(
             'absolute inset-0',
-            'bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(0,0,0,0.3)_70%,rgba(0,0,0,0.7)_100%)]'
+            'bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(255,255,255,0.3)_70%,rgba(255,255,255,0.7)_100%)]',
+            'dark:bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(0,0,0,0.3)_70%,rgba(0,0,0,0.7)_100%)]'
           )}
         />
       )}

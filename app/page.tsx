@@ -7,6 +7,7 @@ import { AuroraBackground } from '@/components/aceternity/aurora-background';
 import { Spotlight } from '@/components/aceternity/spotlight';
 import { GlareCard } from '@/components/aceternity/glare-card';
 import { GridBackground } from '@/components/aceternity/grid-background';
+import { TextHoverEffect } from '@/components/ui/text-hover-effect';
 
 const features = [
   {
@@ -37,18 +38,25 @@ const features = [
 
 export default function Home() {
   return (
-    <AuroraBackground className="min-h-screen">
+    <AuroraBackground className="min-h-screen relative overflow-hidden">
       <Spotlight className="-top-40 left-0 md:left-60" fill="#0891b2" />
       <Spotlight className="-top-40 right-0 md:right-60" fill="#2563eb" />
 
-      <div className="relative z-10 mx-auto max-w-7xl px-4 pb-20 pt-32 md:pt-40">
+      {/* Background Watermark */}
+      <div className="fixed top-0 left-0 right-0 flex h-screen items-center justify-center pointer-events-auto z-0 opacity-50 dark:opacity-70">
+        <div className="w-full max-w-7xl px-4">
+          <TextHoverEffect text="FINTRACK" />
+        </div>
+      </div>
+
+      <div className="relative z-10 mx-auto max-w-7xl px-4 pb-20 pt-32 md:pt-40 pointer-events-none">
         {/* Hero Section */}
-        <div className="flex flex-col items-center justify-center text-center">
+        <div className="flex flex-col items-center justify-center text-center pointer-events-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="mb-4 inline-flex items-center gap-2 rounded-full border border-cyan-500/30 bg-cyan-500/10 px-4 py-1.5 text-sm text-cyan-400"
+            className="mb-4 inline-flex items-center gap-2 rounded-full border border-cyan-600/20 bg-cyan-500/10 px-4 py-1.5 text-sm text-cyan-700 dark:border-cyan-500/30 dark:text-cyan-400"
           >
             <TrendingUp className="h-4 w-4" />
             Premium Finance Tracking
@@ -108,7 +116,7 @@ export default function Home() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.5 }}
-          className="mt-24 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4"
+          className="mt-24 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4 pointer-events-auto"
         >
           {features.map((feature, index) => (
             <motion.div
@@ -126,13 +134,12 @@ export default function Home() {
           ))}
         </motion.div>
 
-        {/* Stats Section */}
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.7 }}
-          className="mt-32"
+          className="mt-32 pointer-events-auto"
         >
           <GridBackground className="rounded-3xl bg-card/50 p-8 md:p-12 lg:p-16">
             <div className="relative z-10">
