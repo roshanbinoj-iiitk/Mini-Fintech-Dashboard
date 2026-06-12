@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion';
 import { PieChart, Pie, Cell, ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
 import { Transaction, categoryColors } from '@/types/transaction';
-import { getCategoryBreakdown, getMonthlySpending, getLargestTransaction, calculateTotalIncome, calculateTotalExpense } from '@/lib/calculations';
+import { getCategoryBreakdown, getMonthlySpending, getLargestIncome, getLargestExpense, calculateTotalIncome, calculateTotalExpense } from '@/lib/calculations';
 import { formatCurrency, formatMonth } from '@/lib/utils';
 import { BentoCard, BentoGrid } from '@/components/aceternity/bento-grid';
 import { TrendingUp, TrendingDown, IndianRupee, PiggyBank } from 'lucide-react';
@@ -19,7 +19,8 @@ export function AnalyticsCharts({ transactions }: AnalyticsChartsProps) {
   const isDark = theme !== 'light';
   const categoryData = getCategoryBreakdown(transactions);
   const monthlyData = getMonthlySpending(transactions);
-  const largestTransaction = getLargestTransaction(transactions);
+  const largestIncome = getLargestIncome(transactions);
+  const largestExpense = getLargestExpense(transactions);
 
   const totalExpense = calculateTotalExpense(transactions);
   const totalIncome = calculateTotalIncome(transactions);
@@ -157,10 +158,46 @@ export function AnalyticsCharts({ transactions }: AnalyticsChartsProps) {
           </div>
         </BentoCard>
 
-        <BentoCard className="md:col-span-2">
+        <BentoCard className="md:col-span-1">
+          <h3 className="mb-4 text-lg font-semibold text-foreground">Largest Credit</h3>
+          {largestIncome ? (
+            <div className="text-center py-4">
+              <div
+                className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-500/20"
+              >
+                <TrendingUp className="h-8 w-8 text-emerald-500" />
+              </div>
+              <p className="text-3xl font-bold text-foreground">{formatCurrency(largestIncome.amount)}</p>
+              <p className="mt-2 text-sm text-muted-foreground">{largestIncome.category}</p>
+              <p className="text-xs text-muted-foreground">{formatMonth(largestIncome.date)}</p>
+            </div>
+          ) : (
+            <div className="flex h-32 items-center justify-center text-muted-foreground">No credit yet</div>
+          )}
+        </BentoCard>
+
+        <BentoCard className="md:col-span-1">
+          <h3 className="mb-4 text-lg font-semibold text-foreground">Largest Debit</h3>
+          {largestExpense ? (
+            <div className="text-center py-4">
+              <div
+                className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-red-500/20"
+              >
+                <TrendingDown className="h-8 w-8 text-red-500" />
+              </div>
+              <p className="text-3xl font-bold text-foreground">{formatCurrency(largestExpense.amount)}</p>
+              <p className="mt-2 text-sm text-muted-foreground">{largestExpense.category}</p>
+              <p className="text-xs text-muted-foreground">{formatMonth(largestExpense.date)}</p>
+            </div>
+          ) : (
+            <div className="flex h-32 items-center justify-center text-muted-foreground">No debit yet</div>
+          )}
+        </BentoCard>
+
+        <BentoCard className="md:col-span-2 lg:col-span-3">
           <h3 className="mb-4 text-lg font-semibold text-foreground">Top Spending Categories</h3>
           {categoryData.length > 0 ? (
-            <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {categoryData.slice(0, 6).map((cat, index) => (
                 <div key={cat.category} className="space-y-2">
                   <div className="flex items-center justify-between text-sm">
@@ -184,24 +221,7 @@ export function AnalyticsCharts({ transactions }: AnalyticsChartsProps) {
           )}
         </BentoCard>
 
-        <BentoCard className="md:col-span-1">
-          <h3 className="mb-4 text-lg font-semibold text-foreground">Largest Transaction</h3>
-          {largestTransaction ? (
-            <div className="text-center py-4">
-              <div
-                className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl"
-                style={{ backgroundColor: `${categoryColors[largestTransaction.category] || '#71717a'}20` }}
-              >
-                <IndianRupee className="h-8 w-8" style={{ color: categoryColors[largestTransaction.category] || '#71717a' }} />
-              </div>
-              <p className="text-3xl font-bold text-foreground">{formatCurrency(largestTransaction.amount)}</p>
-              <p className="mt-2 text-sm text-muted-foreground">{largestTransaction.category}</p>
-              <p className="text-xs text-muted-foreground">{formatMonth(largestTransaction.date)}</p>
-            </div>
-          ) : (
-            <div className="flex h-32 items-center justify-center text-muted-foreground">No transactions yet</div>
-          )}
-        </BentoCard>
+
       </BentoGrid>
     </div>
   );

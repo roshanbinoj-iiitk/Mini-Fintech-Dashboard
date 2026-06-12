@@ -86,6 +86,18 @@ export function getLargestTransaction(transactions: Transaction[]): Transaction 
   return transactions.reduce((max, t) => (t.amount > max.amount ? t : max));
 }
 
+export function getLargestIncome(transactions: Transaction[]): Transaction | null {
+  const incomes = transactions.filter(t => t.type === 'income');
+  if (incomes.length === 0) return null;
+  return incomes.reduce((max, t) => (t.amount > max.amount ? t : max));
+}
+
+export function getLargestExpense(transactions: Transaction[]): Transaction | null {
+  const expenses = transactions.filter(t => t.type === 'expense');
+  if (expenses.length === 0) return null;
+  return expenses.reduce((max, t) => (t.amount > max.amount ? t : max));
+}
+
 export function getCategoryBreakdown(transactions: Transaction[]): CategoryData[] {
   const expenses = transactions.filter((t) => t.type === 'expense');
   const totalExpense = expenses.reduce((sum, t) => sum + t.amount, 0);
