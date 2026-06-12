@@ -111,8 +111,16 @@ export function ProductTour() {
       tooltipText: "Every financial activity remains organized, searchable, and easy to review.",
       duration: 5000,
       action: () => {
-        // Just move the cursor to the theme toggle
+        // Just move the cursor
       }
+    },
+    {
+      id: 'bulk-actions',
+      path: '/transactions',
+      targetId: 'tour-bulk-actions',
+      tooltipTitle: 'Bulk Operations & Export',
+      tooltipText: "Select multiple transactions for quick bulk deletion, or export your filtered view to CSV.",
+      duration: 5000,
     },
     {
       id: 'theme-switch',

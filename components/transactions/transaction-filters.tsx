@@ -212,6 +212,7 @@ export function TransactionFilters({ transactions, categories, totalPages, curre
           </Button>
 
           <Button
+            id="tour-export-btn"
             variant="outline"
             onClick={handleExport}
             className="border-border bg-card/50 text-muted-foreground hover:text-foreground hover:bg-secondary/80"
@@ -358,7 +359,7 @@ export function TransactionFilters({ transactions, categories, totalPages, curre
       )}
 
       {/* Bulk Actions Header */}
-      <div className="flex items-center justify-between bg-card/30 p-2 rounded-xl border border-border/50">
+      <div id="tour-bulk-actions" className="flex items-center justify-between bg-card/30 p-2 rounded-xl border border-border/50">
         <div className="flex items-center gap-3 px-2">
           <button 
             onClick={toggleSelectAll}
