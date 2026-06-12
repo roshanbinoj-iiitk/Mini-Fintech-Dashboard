@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { LayoutDashboard, ArrowLeftRight, PieChart, Lightbulb, Plus, Menu, Sun, Moon } from 'lucide-react';
@@ -19,6 +19,7 @@ const navItems = [
 
 export function FloatingNavbar() {
   const pathname = usePathname();
+  const router = useRouter();
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -91,16 +92,15 @@ export function FloatingNavbar() {
 
           <div className="mx-2 h-6 w-px bg-border" />
 
-          <Link href="/add-transaction">
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="flex items-center gap-2 rounded-full px-4 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-sm font-medium text-white shadow-lg shadow-cyan-500/25"
-            >
-              <Plus className="h-4 w-4" />
-              Add
-            </motion.button>
-          </Link>
+          <motion.button
+            onClick={() => router.push('/add-transaction')}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="flex items-center gap-2 rounded-full px-4 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-sm font-medium text-white shadow-lg shadow-cyan-500/25 cursor-pointer"
+          >
+            <Plus className="h-4 w-4" />
+            Add
+          </motion.button>
 
           <button
             id="tour-theme-toggle"
@@ -126,18 +126,18 @@ export function FloatingNavbar() {
           </Link>
 
           <div className="flex items-center gap-2">
-            <Link href="/add-transaction">
-              <Button size="sm" className="bg-gradient-to-r from-cyan-500 to-blue-600 shadow-lg shadow-cyan-500/25">
-                <Plus className="h-4 w-4 mr-1" />
-                Add
-              </Button>
-            </Link>
+            <Button 
+              size="sm" 
+              className="bg-gradient-to-r from-cyan-500 to-blue-600 shadow-lg shadow-cyan-500/25"
+              onClick={() => router.push('/add-transaction')}
+            >
+              <Plus className="h-4 w-4 mr-1" />
+              Add
+            </Button>
 
             <Sheet>
-              <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="text-foreground">
-                  <Menu className="h-5 w-5" />
-                </Button>
+              <SheetTrigger render={<Button variant="ghost" size="icon" className="text-foreground" />}>
+                <Menu className="h-5 w-5" />
               </SheetTrigger>
               <SheetContent side="right" className="w-72 bg-background border-border">
                 <div className="flex flex-col gap-4 mt-8">
