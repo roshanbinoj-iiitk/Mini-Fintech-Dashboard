@@ -30,6 +30,7 @@ export function SeedButton() {
   return (
     <div className="flex flex-col items-center gap-2">
       <motion.button
+        id="tour-seed-data"
         onClick={handleSeed}
         disabled={isSeeding}
         whileHover={{ scale: 1.05 }}

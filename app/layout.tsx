@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { FloatingNavbar } from "@/components/navigation/floating-navbar";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { ProductTour } from "@/components/tour/product-tour";
 
 const fontSans = Plus_Jakarta_Sans({
   variable: "--font-sans",
@@ -36,6 +37,7 @@ export default function RootLayout({
           <TooltipProvider>
             <FloatingNavbar />
             {children}
+            <ProductTour />
           </TooltipProvider>
         </ThemeProvider>
       </body>

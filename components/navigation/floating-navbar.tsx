@@ -24,6 +24,7 @@ export function FloatingNavbar() {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
     const handleScroll = () => setScrolled(window.scrollY > 50);
     window.addEventListener('scroll', handleScroll);
@@ -41,6 +42,7 @@ export function FloatingNavbar() {
         className="fixed top-4 left-1/2 z-50 -translate-x-1/2 hidden md:block"
       >
         <motion.div
+          id="tour-nav"
           className={cn(
             'relative flex items-center gap-1 rounded-full px-2 py-2',
             'bg-background/80 backdrop-blur-xl border border-border/50',
@@ -101,6 +103,7 @@ export function FloatingNavbar() {
           </Link>
 
           <button
+            id="tour-theme-toggle"
             onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
             className="relative z-10 ml-2 rounded-full p-2 text-muted-foreground hover:text-foreground hover:bg-secondary/50 transition-colors"
           >

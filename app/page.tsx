@@ -91,6 +91,7 @@ export default function Home() {
           >
             <Link href="/dashboard">
               <motion.button
+                id="tour-start-tracking"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 className="group inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 px-8 py-4 text-base font-semibold text-foreground shadow-lg shadow-cyan-500/25 transition-shadow hover:shadow-xl hover:shadow-cyan-500/30"
@@ -99,15 +100,14 @@ export default function Home() {
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
               </motion.button>
             </Link>
-            <Link href="/transactions">
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="inline-flex items-center gap-2 rounded-full border border-border bg-accent px-8 py-4 text-base font-semibold text-foreground backdrop-blur-sm transition-colors hover:bg-accent"
-              >
-                View Demo
-              </motion.button>
-            </Link>
+            <motion.button
+              onClick={() => window.dispatchEvent(new Event('start-product-tour'))}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="inline-flex items-center gap-2 rounded-full border border-border bg-accent px-8 py-4 text-base font-semibold text-foreground backdrop-blur-sm transition-colors hover:bg-accent"
+            >
+              View Demo
+            </motion.button>
           </motion.div>
         </div>
 

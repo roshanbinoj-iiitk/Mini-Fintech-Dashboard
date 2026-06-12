@@ -27,7 +27,7 @@ export function AnalyticsCharts({ transactions }: AnalyticsChartsProps) {
   const averageMonthlyExpense = monthlyData.length > 0 ? monthlyData.reduce((sum, m) => sum + m.expense, 0) / monthlyData.length : 0;
 
   return (
-    <div className="space-y-6">
+    <div id="tour-analytics-charts" className="space-y-6">
       <BentoGrid>
         <BentoCard className="md:col-span-2 lg:col-span-1">
           <h3 className="mb-4 text-lg font-semibold text-foreground">Spending by Category</h3>

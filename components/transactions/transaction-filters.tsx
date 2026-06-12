@@ -237,7 +237,7 @@ export function TransactionFilters({ transactions }: TransactionFiltersProps) {
           </Button>
         </div>
       ) : (
-        <div className="space-y-3">
+        <div id="tour-transactions-list" className="space-y-3">
           <AnimatePresence mode="popLayout">
             {filteredTransactions.map((transaction, index) => {
               const isIncome = transaction.type === 'income';

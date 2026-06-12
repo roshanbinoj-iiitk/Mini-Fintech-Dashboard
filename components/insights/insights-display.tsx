@@ -133,6 +133,7 @@ export function InsightsDisplay({ transactions }: InsightsDisplayProps) {
         </div>
         
         <Button 
+          id="tour-generate-insights"
           onClick={handleGenerate} 
           disabled={isGenerating} 
           className="w-full sm:w-auto bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white border-0 shadow-lg shadow-cyan-500/25 transition-all duration-300"
@@ -166,7 +167,7 @@ export function InsightsDisplay({ transactions }: InsightsDisplayProps) {
           <p className="max-w-md text-muted-foreground mb-6">Analyze your transaction history using LLaMA to get personalized recommendations and actionable financial advice.</p>
         </div>
       ) : (
-        <>
+        <div id="tour-insights-results">
           <div className="mb-6 p-4 rounded-2xl bg-secondary/50 border border-border">
             <p className="text-foreground text-sm md:text-base leading-relaxed">{aiResponse.summary}</p>
           </div>
@@ -238,7 +239,7 @@ export function InsightsDisplay({ transactions }: InsightsDisplayProps) {
               </div>
             </EvervaultCard>
           </motion.div>
-        </>
+        </div>
       )}
     </div>
   );
