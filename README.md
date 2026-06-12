@@ -1,17 +1,20 @@
 # FinTrack - Personal Finance Tracker
 
-A premium, production-quality Personal Finance Tracker built with Next.js 15, featuring modern UI/UX design, AI-powered insights, and beautiful data visualizations.
+A premium, production-quality Personal Finance Tracker built with Next.js 15, featuring modern UI/UX design, AI-powered insights (via Groq), and beautiful data visualizations.
 
 ## Features
 
 - **Premium Dashboard** - Real-time financial overview with animated stat cards and count-up animations
-- **Transaction Management** - Full CRUD operations with Server Actions, filtering, and sorting
+- **Transaction Management** - Full CRUD operations with Server Actions, filtering, sorting, and pagination
+- **Bulk Operations & Export** - Multi-select transactions for bulk deletion and export data to CSV
 - **Spending Analytics** - Interactive charts with Recharts including pie charts and area charts
-- **AI-Powered Insights** - Rule-based financial recommendations and health scoring
-- **Beautiful UI** - Aceternity UI components with Aurora backgrounds, spotlight effects, and micro-interactions
+- **AI-Powered Insights** - Strategic financial recommendations using the Groq API (Llama models)
+- **Beautiful UI** - Aceternity UI components with Aurora backgrounds, spotlight effects, interactive branding watermarks, and micro-interactions
+- **Optimized Performance** - Optimistic UI updates for instant feedback and efficient MongoDB aggregations
 - **Dark Mode** - Full theme support with next-themes
 - **Responsive Design** - Optimized for mobile and desktop with floating navigation
 - **MongoDB Backend** - Fast and flexible NoSQL database with Mongoose ORM
+- **IST Timezone Standard** - Consistent 'Asia/Kolkata' timezone handling across all operations
 
 ## Tech Stack
 
@@ -21,7 +24,8 @@ A premium, production-quality Personal Finance Tracker built with Next.js 15, fe
 - **UI Components**: shadcn/ui + Aceternity UI
 - **Animations**: Framer Motion
 - **Charts**: Recharts
-- **Database**: MongoDB Cloud
+- **Database**: MongoDB Cloud + Mongoose ORM
+- **AI**: Groq SDK (Llama models)
 - **Forms**: React Hook Form + Zod validation
 - **Theme**: next-themes
 
@@ -74,15 +78,21 @@ npm install
 2. Create a database user and get your connection string
 3. No manual migrations needed; Mongoose handles the schema automatically
 
-### 3. Environment Variables
+### 3. Setup AI Insights (Groq)
+
+1. Sign up at [Groq Cloud](https://console.groq.com/)
+2. Generate an API Key
+
+### 4. Environment Variables
 
 Create a `.env.local` file in the root directory:
 
 ```env
 MONGODB_URI=your-mongodb-connection-string
+GROQ_API_KEY=your-groq-api-key
 ```
 
-### 4. Run Development Server
+### 5. Run Development Server
 
 ```bash
 npm run dev
@@ -90,7 +100,7 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000)
 
-### 5. Generate Demo Data
+### 6. Generate Demo Data
 
 Visit the dashboard and click "Generate Demo Data" to populate the database with sample transactions for testing.
 
@@ -98,6 +108,7 @@ Visit the dashboard and click "Generate Demo Data" to populate the database with
 
 ```
 app/
+├── api/                     # API routes (including AI insights)
 ├── page.tsx                 # Landing page with hero
 ├── layout.tsx               # Root layout with providers
 ├── dashboard/page.tsx       # Main dashboard
@@ -142,24 +153,26 @@ types/
 
 ### Transactions
 
-- **Advanced Filtering** - By type, category, search text
+- **Bulk Management** - Multi-select and delete multiple transactions at once
+- **CSV Export** - Download filtered transaction data as a CSV file
+- **Advanced Filtering & Pagination** - By type, category, search text, with reliable pagination
 - **Sorting** - Latest/oldest, highest/lowest amount
-- **Delete Confirmation** - Safe deletion with dialog
+- **Optimistic UI** - Instant feedback on deletion actions
 - **Edit Support** - Modify existing transactions
 
 ### Analytics
 
-- **Spending Pie Chart** - Category distribution with colors
+- **Spending Pie Chart** - Category distribution with flush segments and vibrant colors
 - **Monthly Trends** - Area chart for income vs expenses over time
 - **Key Metrics** - Summary statistics with animations
 - **Top Categories** - Progress bar visualizations
 
 ### Insights
 
-- **Rule-Based Analysis** - Spending patterns, savings rate
-- **Personalized Tips** - Contextual recommendations
-- **Health Score** - Overall financial wellness indicator
-- **Visual Cards** - Color-coded by insight type
+- **AI-Powered Analysis** - Strategic wealth management advice powered by Groq and Llama models
+- **Real-time Generation** - On-demand financial insights based on your transaction history
+- **Localized** - Output and recommendations formatted in Indian Rupees (₹)
+- **Visual Cards** - Premium loading states and interactive UI
 
 ## Deployment
 
