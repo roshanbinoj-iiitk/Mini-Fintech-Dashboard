@@ -453,33 +453,43 @@ export function TransactionFilters({ transactions, categories, totalPages, curre
                     )}
                   </div>
 
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
+                  <div className="flex-1 min-w-0 pr-2">
+                    <div className="flex items-center gap-2 min-w-0">
                       <p className="font-medium text-foreground truncate">{transaction.category}</p>
                       <Badge
                         variant="outline"
-                        className={cn('text-xs shrink-0', isIncome ? 'border-emerald-500/30 text-emerald-400' : 'border-red-500/30 text-red-400')}
+                        className={cn('text-xs shrink-0 hidden sm:inline-flex', isIncome ? 'border-emerald-500/30 text-emerald-400' : 'border-red-500/30 text-red-400')}
                       >
                         {isIncome ? 'Income' : 'Expense'}
                       </Badge>
                     </div>
-                    <div className="flex items-center gap-2 mt-1 text-sm text-muted-foreground">
-                      <Calendar className="h-3 w-3 shrink-0" />
-                      <span className="shrink-0">{formatDate(transaction.date)}</span>
+                    <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mt-1 text-xs sm:text-sm text-muted-foreground">
+                      <div className="flex items-center gap-1 shrink-0">
+                        <Calendar className="h-3 w-3 shrink-0" />
+                        <span className="shrink-0">{formatDate(transaction.date)}</span>
+                      </div>
                       {transaction.note && (
-                        <>
-                          <span className="shrink-0">-</span>
-                          <span className="truncate max-w-48">{transaction.note}</span>
-                        </>
+                        <div className="flex items-center gap-1 min-w-0">
+                          <span className="shrink-0 hidden sm:inline">-</span>
+                          <span className="truncate max-w-[120px] sm:max-w-48 text-muted-foreground/80">{transaction.note}</span>
+                        </div>
                       )}
                     </div>
                   </div>
 
                   <div className="text-right shrink-0">
-                    <p className="text-lg font-semibold" style={{ color: isIncome ? '#10b981' : '#ef4444' }}>
+                    <p className="text-base sm:text-lg font-semibold" style={{ color: isIncome ? '#10b981' : '#ef4444' }}>
                       {isIncome ? '+' : '-'}
                       {formatCurrency(transaction.amount)}
                     </p>
+                    <div className="sm:hidden mt-1">
+                      <Badge
+                        variant="outline"
+                        className={cn('text-[10px] px-1 py-0 h-4', isIncome ? 'border-emerald-500/30 text-emerald-400' : 'border-red-500/30 text-red-400')}
+                      >
+                        {isIncome ? 'Income' : 'Expense'}
+                      </Badge>
+                    </div>
                   </div>
 
                   <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">

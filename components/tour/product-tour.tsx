@@ -284,7 +284,7 @@ export function ProductTour() {
     return (
       <button 
         onClick={startTour}
-        className="fixed bottom-4 left-4 z-50 rounded-full bg-cyan-500/10 px-4 py-2 text-sm text-cyan-500 border border-cyan-500/20 backdrop-blur-sm transition-all hover:bg-cyan-500/20"
+        className="fixed bottom-4 left-4 z-50 hidden md:flex items-center rounded-full bg-cyan-500/10 px-4 py-2 text-sm text-cyan-500 border border-cyan-500/20 backdrop-blur-sm transition-all hover:bg-cyan-500/20"
       >
         <Play className="inline-block w-4 h-4 mr-2" />
         Product Tour

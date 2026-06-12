@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
-import { LayoutDashboard, ArrowLeftRight, PieChart, Lightbulb, Plus, Menu, Sun, Moon } from 'lucide-react';
+import { LayoutDashboard, ArrowLeftRight, PieChart, Lightbulb, Plus, Menu, Sun, Moon, Play } from 'lucide-react';
 import { useTheme } from 'next-themes';
 
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -159,6 +159,15 @@ export function FloatingNavbar() {
                     </Link>
                   ))}
                   <div className="h-px bg-border my-4" />
+                  <button
+                    onClick={() => {
+                      document.dispatchEvent(new Event('start-product-tour'));
+                    }}
+                    className="flex items-center gap-3 rounded-lg px-4 py-3 text-base font-medium text-cyan-500 hover:bg-cyan-500/10 transition-colors"
+                  >
+                    <Play className="h-5 w-5" />
+                    Product Tour
+                  </button>
                   <button
                     onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
                     className="flex items-center gap-3 rounded-lg px-4 py-3 text-base font-medium text-muted-foreground hover:text-foreground hover:bg-secondary/50 transition-colors"
