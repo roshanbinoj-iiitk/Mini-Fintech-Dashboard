@@ -8,7 +8,7 @@ import { CardSpotlight } from '@/components/aceternity/card-spotlight';
 
 interface StatCardProps {
   title: string;
-  value: number;
+  value: number | string;
   prefix?: string;
   suffix?: string;
   icon: LucideIcon;
@@ -56,8 +56,16 @@ export function StatCard({ title, value, prefix = '', suffix = '', icon: Icon, t
 
           <div className="mt-4 flex-1">
             <p className="text-sm text-muted-foreground">{title}</p>
-            <h3 className="mt-1 text-3xl font-bold text-foreground">
-              <CountUp end={value} prefix={prefix} suffix={suffix} decimals={decimals} />
+            <h3 className={cn("mt-1 font-bold text-foreground truncate", typeof value === 'string' && value.length > 10 ? "text-2xl" : "text-3xl")}>
+              {typeof value === 'number' ? (
+                <CountUp end={value} prefix={prefix} suffix={suffix} decimals={decimals} />
+              ) : (
+                <span>
+                  {prefix}
+                  {value}
+                  {suffix}
+                </span>
+              )}
             </h3>
           </div>
 

@@ -43,6 +43,29 @@ export function getTopSpendingCategory(transactions: Transaction[]): string | nu
   return sorted[0]?.[0] || null;
 }
 
+export function getTopSpendingCategoryThisMonth(transactions: Transaction[]): string | null {
+  const nowStr = new Date().toLocaleString('en-US', { timeZone: 'Asia/Kolkata' });
+  const now = new Date(nowStr);
+  const currentYear = now.getFullYear();
+  const currentMonth = now.getMonth() + 1;
+
+  const expenses = transactions.filter((t) => {
+    if (t.type !== 'expense') return false;
+    const [y, m] = extractYearMonth(t.date);
+    return y === currentYear && m === currentMonth;
+  });
+
+  if (expenses.length === 0) return null;
+
+  const categoryTotals: Record<string, number> = {};
+  expenses.forEach((t) => {
+    categoryTotals[t.category] = (categoryTotals[t.category] || 0) + t.amount;
+  });
+
+  const sorted = Object.entries(categoryTotals).sort((a, b) => b[1] - a[1]);
+  return sorted[0]?.[0] || null;
+}
+
 export function getMonthlySpending(transactions: Transaction[]): MonthlyData[] {
   const monthlyData: Record<string, { income: number; expense: number }> = {};
 

@@ -1,13 +1,13 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Wallet, TrendingUp, TrendingDown, ArrowLeftRight, PiggyBank } from 'lucide-react';
+import { Wallet, TrendingUp, TrendingDown, ArrowLeftRight, PiggyBank, PieChart } from 'lucide-react';
 import { Transaction } from '@/types/transaction';
 import { StatCard } from './stat-card';
 import { RecentTransactions } from './recent-transactions';
 import { BentoCard, BentoGrid } from '@/components/aceternity/bento-grid';
 import { CountUp } from './count-up';
-import { calculateTotalIncome, calculateTotalExpense, getRecentTransactions, compareMonths } from '@/lib/calculations';
+import { calculateTotalIncome, calculateTotalExpense, getRecentTransactions, compareMonths, getTopSpendingCategoryThisMonth } from '@/lib/calculations';
 import { formatCurrency } from '@/lib/utils';
 
 interface DashboardContentProps {
@@ -20,6 +20,7 @@ export function DashboardContent({ transactions }: DashboardContentProps) {
   const netBalance = totalIncome - totalExpense;
   const recentTransactions = getRecentTransactions(transactions, 5);
   const monthComparison = compareMonths(transactions);
+  const topCategory = getTopSpendingCategoryThisMonth(transactions);
 
   return (
     <div className="space-y-8">
@@ -56,7 +57,7 @@ export function DashboardContent({ transactions }: DashboardContentProps) {
           icon={Wallet}
           color={netBalance >= 0 ? 'cyan' : 'red'}
         />
-        <StatCard title="Transactions" value={transactions.length} icon={ArrowLeftRight} color="blue" />
+        <StatCard title="Top Category (This Month)" value={topCategory || 'N/A'} icon={PieChart} color="purple" />
       </div>
 
       <BentoGrid className="mt-8">
