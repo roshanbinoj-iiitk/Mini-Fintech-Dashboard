@@ -33,9 +33,9 @@ export function StatCard({ title, value, prefix = '', suffix = '', icon: Icon, t
   const colors = colorVariants[color];
 
   return (
-    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-      <CardSpotlight className="rounded-3xl" spotlightColor={`${colors.glow}20`}>
-        <div className={cn('rounded-3xl border p-6 backdrop-blur-sm', colors.border)}>
+    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="h-full">
+      <CardSpotlight className="rounded-3xl h-full" spotlightColor={`${colors.glow}20`}>
+        <div className={cn('rounded-3xl border p-6 backdrop-blur-sm h-full flex flex-col', colors.border)}>
           <div className="flex items-start justify-between">
             <div className="rounded-xl p-3 bg-gradient-to-br from-white/5 to-white/10">
               <Icon className={cn('h-5 w-5', colors.icon)} />
@@ -54,14 +54,18 @@ export function StatCard({ title, value, prefix = '', suffix = '', icon: Icon, t
             )}
           </div>
 
-          <div className="mt-4">
+          <div className="mt-4 flex-1">
             <p className="text-sm text-muted-foreground">{title}</p>
             <h3 className="mt-1 text-3xl font-bold text-foreground">
               <CountUp end={value} prefix={prefix} suffix={suffix} decimals={decimals} />
             </h3>
           </div>
 
-          {trend && <p className="mt-2 text-xs text-muted-foreground">{trend.label}</p>}
+          {trend ? (
+            <p className="mt-2 text-xs text-muted-foreground">{trend.label}</p>
+          ) : (
+            <p className="mt-2 text-xs text-transparent select-none" aria-hidden="true">Placeholder</p>
+          )}
         </div>
       </CardSpotlight>
     </motion.div>
