@@ -14,6 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { CardSpotlight } from '@/components/aceternity/card-spotlight';
 import { ArrowLeft, Loader2, CheckCircle } from 'lucide-react';
 import Link from 'next/link';
+import { getISTDateString } from '@/lib/utils';
 
 const schema = z.object({
   amount: z.number().positive('Amount must be greater than 0'),
@@ -48,7 +49,7 @@ export function TransactionForm() {
       amount: 0,
       category: '',
       type: 'expense',
-      date: new Date().toISOString().split('T')[0],
+      date: getISTDateString(),
       note: '',
     },
   });
@@ -67,7 +68,21 @@ export function TransactionForm() {
         setValue('amount', transaction.amount);
         setValue('category', transaction.category);
         setValue('type', transaction.type as 'income' | 'expense');
-        setValue('date', transaction.date);
+        
+        // Ensure date is in YYYY-MM-DD format for the input[type="date"]
+        let formattedDate = '';
+        if (transaction.date instanceof Date) {
+          formattedDate = getISTDateString(transaction.date as Date);
+        } else if (typeof transaction.date === 'string') {
+          formattedDate = transaction.date.includes('T') 
+            ? transaction.date.split('T')[0] 
+            : getISTDateString(new Date(transaction.date));
+        } else {
+          // fallback
+          formattedDate = getISTDateString(new Date(String(transaction.date)));
+        }
+        setValue('date', formattedDate);
+        
         setValue('note', transaction.note || '');
         setType(transaction.type as 'income' | 'expense');
       }

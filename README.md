@@ -21,7 +21,7 @@ A premium, production-quality Personal Finance Tracker built with Next.js 15, fe
 - **UI Components**: shadcn/ui + Aceternity UI
 - **Animations**: Framer Motion
 - **Charts**: Recharts
-- **Database**: Supabase (PostgreSQL)
+- **Database**: MongoDB Cloud
 - **Forms**: React Hook Form + Zod validation
 - **Theme**: next-themes
 

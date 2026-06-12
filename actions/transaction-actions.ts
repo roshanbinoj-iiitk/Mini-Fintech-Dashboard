@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache';
 import connectToDatabase from '@/lib/mongodb';
 import Transaction from '@/models/Transaction';
 import { z } from 'zod';
+import { getISTDateString } from '@/lib/utils';
 
 const transactionSchema = z.object({
   amount: z.number().positive('Amount must be greater than 0'),
@@ -128,7 +129,8 @@ export async function seedDatabase() {
       return { success: false, message: 'Database already seeded' };
     }
 
-    const now = new Date();
+    const nowStr = new Date().toLocaleString('en-US', { timeZone: 'Asia/Kolkata' });
+    const now = new Date(nowStr);
     const seedTransactions: Array<{
       amount: number;
       category: string;
@@ -165,7 +167,7 @@ export async function seedDatabase() {
           amount: Math.floor(Math.random() * 3000) + 2000,
           category: incomeCategories[Math.floor(Math.random() * incomeCategories.length)],
           type: 'income',
-          date: date.toISOString().split('T')[0],
+          date: getISTDateString(date),
           note: ['Monthly income', 'Project payment', 'Client work', 'Side hustle'][
             Math.floor(Math.random() * 4)
           ],
@@ -228,7 +230,7 @@ export async function seedDatabase() {
           amount,
           category,
           type: 'expense',
-          date: date.toISOString().split('T')[0],
+          date: getISTDateString(date),
           note: categoryNotes[Math.floor(Math.random() * categoryNotes.length)],
         });
       }

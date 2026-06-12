@@ -91,7 +91,7 @@ export function generateInsights(transactions: Transaction[]): Insight[] {
       type: 'info',
       title: 'Notable large transaction',
       description: `Your largest transaction was ₹${largestTransaction.amount.toFixed(2)} in ${largestTransaction.category}. This represents ${((largestTransaction.amount / totalExpense) * 100).toFixed(1)}% of total expenses.`,
-      icon: 'DollarSign',
+      icon: 'IndianRupee',
     });
   }
 

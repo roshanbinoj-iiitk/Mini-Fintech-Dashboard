@@ -6,7 +6,7 @@ import { Transaction, categoryColors } from '@/types/transaction';
 import { getCategoryBreakdown, getMonthlySpending, getLargestTransaction, calculateTotalIncome, calculateTotalExpense } from '@/lib/calculations';
 import { formatCurrency, formatMonth } from '@/lib/utils';
 import { BentoCard, BentoGrid } from '@/components/aceternity/bento-grid';
-import { TrendingUp, TrendingDown, DollarSign, PiggyBank } from 'lucide-react';
+import { TrendingUp, TrendingDown, IndianRupee, PiggyBank } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { CountUp } from '@/components/dashboard/count-up';
 
@@ -94,10 +94,7 @@ export function AnalyticsCharts({ transactions }: AnalyticsChartsProps) {
                 <XAxis
                   dataKey="month"
                   tick={{ fill: '#71717a', fontSize: 12 }}
-                  tickFormatter={(value) => {
-                    const date = new Date(value + '-01');
-                    return date.toLocaleDateString('en-US', { month: 'short' });
-                  }}
+                  tickFormatter={(value) => formatMonth(value + '-01')}
                 />
                 <YAxis tick={{ fill: '#71717a', fontSize: 12 }} tickFormatter={(value) => `₹${(value / 1000).toFixed(0)}k`} />
                 <Tooltip
@@ -195,7 +192,7 @@ export function AnalyticsCharts({ transactions }: AnalyticsChartsProps) {
                 className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl"
                 style={{ backgroundColor: `${categoryColors[largestTransaction.category] || '#71717a'}20` }}
               >
-                <DollarSign className="h-8 w-8" style={{ color: categoryColors[largestTransaction.category] || '#71717a' }} />
+                <IndianRupee className="h-8 w-8" style={{ color: categoryColors[largestTransaction.category] || '#71717a' }} />
               </div>
               <p className="text-3xl font-bold text-foreground">{formatCurrency(largestTransaction.amount)}</p>
               <p className="mt-2 text-sm text-muted-foreground">{largestTransaction.category}</p>

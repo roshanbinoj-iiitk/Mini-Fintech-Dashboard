@@ -5,7 +5,7 @@ import { Transaction, Insight } from '@/types/transaction';
 import { generateInsights } from '@/lib/insights';
 import { CardSpotlight } from '@/components/aceternity/card-spotlight';
 import { EvervaultCard } from '@/components/aceternity/evervault-card';
-import { AlertTriangle, TrendingUp, TrendingDown, PiggyBank, Lightbulb, PieChart, DollarSign, Scale, ArrowUpRight, Sparkles } from 'lucide-react';
+import { AlertTriangle, TrendingUp, TrendingDown, PiggyBank, Lightbulb, PieChart, IndianRupee, Scale, ArrowUpRight, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface InsightsDisplayProps {
@@ -19,7 +19,7 @@ const iconMap: Record<string, React.ElementType> = {
   AlertTriangle,
   PiggyBank,
   Lightbulb,
-  DollarSign,
+  IndianRupee,
   Scale,
   ArrowUpRight,
   Sparkles,

@@ -37,8 +37,8 @@ export function getMonthlySpending(transactions: Transaction[]): MonthlyData[] {
   );
 
   sortedTransactions.forEach((t) => {
-    const date = new Date(t.date);
-    const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+    const [year, month] = t.date.split('-');
+    const key = `${year}-${month}`;
 
     if (!monthlyData[key]) {
       monthlyData[key] = { income: 0, expense: 0 };
@@ -114,24 +114,31 @@ export function getRecentTransactions(transactions: Transaction[], limit: number
 export function compareMonths(
   transactions: Transaction[]
 ): { currentMonth: number; previousMonth: number; change: number } {
-  const now = new Date();
-  const currentMonthStart = new Date(now.getFullYear(), now.getMonth(), 1);
-  const previousMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-  const previousMonthEnd = new Date(now.getFullYear(), now.getMonth(), 0);
+  const nowStr = new Date().toLocaleString('en-US', { timeZone: 'Asia/Kolkata' });
+  const now = new Date(nowStr);
+  const currentYear = now.getFullYear();
+  const currentMonth = now.getMonth() + 1; // 1-12
+  
+  let previousYear = currentYear;
+  let previousMonth = currentMonth - 1;
+  if (previousMonth === 0) {
+    previousMonth = 12;
+    previousYear -= 1;
+  }
 
   const currentMonthExpenses = transactions
     .filter((t) => {
-      const date = new Date(t.date);
-      return t.type === 'expense' && date >= currentMonthStart;
+      if (t.type !== 'expense') return false;
+      const [y, m] = t.date.split('-').map(Number);
+      return y === currentYear && m === currentMonth;
     })
     .reduce((sum, t) => sum + t.amount, 0);
 
   const previousMonthExpenses = transactions
     .filter((t) => {
-      const date = new Date(t.date);
-      return (
-        t.type === 'expense' && date >= previousMonthStart && date <= previousMonthEnd
-      );
+      if (t.type !== 'expense') return false;
+      const [y, m] = t.date.split('-').map(Number);
+      return y === previousYear && m === previousMonth;
     })
     .reduce((sum, t) => sum + t.amount, 0);
 
