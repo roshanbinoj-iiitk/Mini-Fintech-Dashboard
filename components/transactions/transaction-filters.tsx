@@ -5,13 +5,13 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Transaction } from '@/types/transaction';
 import { formatCurrency, formatDate, cn } from '@/lib/utils';
 import { categoryColors } from '@/types/transaction';
-import { ArrowUpRight, ArrowDownLeft, Search, SlidersHorizontal, X, Calendar, CircleDot, Trash2, Edit, Loader2, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ArrowUpRight, ArrowDownLeft, Search, SlidersHorizontal, X, Calendar, CircleDot, Trash2, Edit, Loader2, ChevronLeft, ChevronRight, Download, CheckSquare, Square } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
-import { deleteTransaction } from '@/actions/transaction-actions';
+import { deleteTransaction, deleteManyTransactions } from '@/actions/transaction-actions';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import Link from 'next/link';
 
@@ -42,11 +42,22 @@ export function TransactionFilters({ transactions, categories, totalPages, curre
   const [localSearch, setLocalSearch] = useState(searchParam);
   const [showFilters, setShowFilters] = useState(false);
   const [deleteDialog, setDeleteDialog] = useState<{ open: boolean; id: string | null }>({ open: false, id: null });
-  const [isDeleting, setIsDeleting] = useState(false);
+  
+  // Optimistic State
+  const [deletedIds, setDeletedIds] = useState<Set<string>>(new Set());
+  
+  // Bulk Actions State
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [isBulkDeleting, setIsBulkDeleting] = useState(false);
 
   useEffect(() => {
     setLocalSearch(searchParam);
   }, [searchParam]);
+
+  // Clear selections when transactions change
+  useEffect(() => {
+    setSelectedIds(new Set());
+  }, [transactions]);
 
   const updateFilters = useCallback((name: string, value: string | null) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -56,7 +67,6 @@ export function TransactionFilters({ transactions, categories, totalPages, curre
       params.delete(name);
     }
     
-    // Reset to page 1 when any filter (other than page itself) changes
     if (name !== 'page') {
       params.delete('page');
     }
@@ -77,14 +87,61 @@ export function TransactionFilters({ transactions, categories, totalPages, curre
 
   const handleDelete = async () => {
     if (!deleteDialog.id) return;
-    setIsDeleting(true);
+    const idToDelete = deleteDialog.id;
+    
+    // Optimistic Update
+    setDeletedIds(prev => new Set(prev).add(idToDelete));
+    setDeleteDialog({ open: false, id: null });
+    
     try {
-      await deleteTransaction(deleteDialog.id);
-      setDeleteDialog({ open: false, id: null });
+      const result = await deleteTransaction(idToDelete);
+      if (!result?.success) {
+        setDeletedIds(prev => {
+          const newSet = new Set(prev);
+          newSet.delete(idToDelete);
+          return newSet;
+        });
+      }
     } catch {
-      console.error('Failed to delete');
+      setDeletedIds(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(idToDelete);
+        return newSet;
+      });
+    }
+  };
+
+  const handleBulkDelete = async () => {
+    if (selectedIds.size === 0) return;
+    
+    const idsToDelete = Array.from(selectedIds);
+    setIsBulkDeleting(true);
+    
+    // Optimistic Update
+    setDeletedIds(prev => {
+      const newSet = new Set(prev);
+      idsToDelete.forEach(id => newSet.add(id));
+      return newSet;
+    });
+    setSelectedIds(new Set());
+    
+    try {
+      const result = await deleteManyTransactions(idsToDelete);
+      if (!result?.success) {
+        setDeletedIds(prev => {
+          const newSet = new Set(prev);
+          idsToDelete.forEach(id => newSet.delete(id));
+          return newSet;
+        });
+      }
+    } catch {
+      setDeletedIds(prev => {
+        const newSet = new Set(prev);
+        idsToDelete.forEach(id => newSet.delete(id));
+        return newSet;
+      });
     } finally {
-      setIsDeleting(false);
+      setIsBulkDeleting(false);
     }
   };
 
@@ -95,7 +152,32 @@ export function TransactionFilters({ transactions, categories, totalPages, curre
     });
   };
 
+  const handleExport = () => {
+    window.open(`/api/transactions/export?${searchParams.toString()}`, '_blank');
+  };
+
+  const displayedTransactions = transactions.filter(t => !deletedIds.has(t.id));
   const hasActiveFilters = searchParam || typeFilter !== 'all' || categoryFilter !== 'all' || startDate || endDate;
+
+  const toggleSelectAll = () => {
+    if (selectedIds.size === displayedTransactions.length && displayedTransactions.length > 0) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(displayedTransactions.map(t => t.id)));
+    }
+  };
+
+  const toggleSelect = (id: string) => {
+    setSelectedIds(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(id)) {
+        newSet.delete(id);
+      } else {
+        newSet.add(id);
+      }
+      return newSet;
+    });
+  };
 
   return (
     <div className="space-y-6 relative">
@@ -116,7 +198,7 @@ export function TransactionFilters({ transactions, categories, totalPages, curre
           />
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           <Button
             variant="outline"
             onClick={() => setShowFilters(!showFilters)}
@@ -127,6 +209,15 @@ export function TransactionFilters({ transactions, categories, totalPages, curre
           >
             <SlidersHorizontal className="mr-2 h-4 w-4" />
             Filters
+          </Button>
+
+          <Button
+            variant="outline"
+            onClick={handleExport}
+            className="border-border bg-card/50 text-muted-foreground hover:text-foreground hover:bg-secondary/80"
+          >
+            <Download className="mr-2 h-4 w-4" />
+            Export CSV
           </Button>
 
           <Select value={sortBy} onValueChange={(v) => updateFilters('sortBy', v)}>
@@ -220,6 +311,7 @@ export function TransactionFilters({ transactions, categories, totalPages, curre
         )}
       </AnimatePresence>
 
+      {/* Active Filter Badges */}
       {hasActiveFilters && (
         <div className="flex flex-wrap gap-2">
           {searchParam && (
@@ -265,26 +357,66 @@ export function TransactionFilters({ transactions, categories, totalPages, curre
         </div>
       )}
 
-      <div className="flex items-center justify-between">
-        <p className="text-sm text-muted-foreground">
-          {totalCount} transaction{totalCount !== 1 ? 's' : ''} found
-        </p>
+      {/* Bulk Actions Header */}
+      <div className="flex items-center justify-between bg-card/30 p-2 rounded-xl border border-border/50">
+        <div className="flex items-center gap-3 px-2">
+          <button 
+            onClick={toggleSelectAll}
+            className="text-muted-foreground hover:text-cyan-400 transition-colors"
+            disabled={displayedTransactions.length === 0}
+          >
+            {selectedIds.size > 0 && selectedIds.size === displayedTransactions.length ? (
+              <CheckSquare className="h-5 w-5 text-cyan-400" />
+            ) : (
+              <Square className="h-5 w-5" />
+            )}
+          </button>
+          <span className="text-sm font-medium text-muted-foreground">
+            {selectedIds.size > 0 
+              ? `${selectedIds.size} selected` 
+              : `${totalCount - deletedIds.size} transaction${totalCount - deletedIds.size !== 1 ? 's' : ''} found`}
+          </span>
+        </div>
+        
+        <AnimatePresence>
+          {selectedIds.size > 0 && (
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 20 }}
+            >
+              <Button 
+                variant="destructive" 
+                size="sm" 
+                onClick={handleBulkDelete}
+                disabled={isBulkDeleting}
+                className="h-8 bg-red-600/90 hover:bg-red-600"
+              >
+                <Trash2 className="mr-2 h-4 w-4" />
+                Delete Selected
+              </Button>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
-      {transactions.length === 0 ? (
+      {displayedTransactions.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-16 text-center">
           <CircleDot className="h-12 w-12 text-muted-foreground" />
-          <p className="mt-4 text-muted-foreground">No transactions match your filters</p>
-          <Button variant="ghost" onClick={clearFilters} className="mt-2 text-cyan-400">
-            Clear filters
-          </Button>
+          <p className="mt-4 text-muted-foreground">No transactions found</p>
+          {hasActiveFilters && (
+            <Button variant="ghost" onClick={clearFilters} className="mt-2 text-cyan-400">
+              Clear filters
+            </Button>
+          )}
         </div>
       ) : (
         <div id="tour-transactions-list" className="space-y-3">
           <AnimatePresence mode="popLayout">
-            {transactions.map((transaction, index) => {
+            {displayedTransactions.map((transaction, index) => {
               const isIncome = transaction.type === 'income';
               const color = categoryColors[transaction.category] || '#71717a';
+              const isSelected = selectedIds.has(transaction.id);
 
               return (
                 <motion.div
@@ -292,13 +424,27 @@ export function TransactionFilters({ transactions, categories, totalPages, curre
                   layout
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, x: -100 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
                   transition={{ duration: 0.2, delay: index * 0.02 }}
-                  className="group relative flex items-center gap-4 rounded-2xl border border-border/50 bg-card/50 p-4 backdrop-blur-sm transition-all hover:border-border hover:bg-secondary/50"
+                  className={cn(
+                    "group relative flex items-center gap-4 rounded-2xl border bg-card/50 p-4 backdrop-blur-sm transition-all",
+                    isSelected ? "border-cyan-500/50 bg-cyan-950/20" : "border-border/50 hover:border-border hover:bg-secondary/50"
+                  )}
                 >
                   <div className="absolute left-0 top-1/2 h-8 w-1 -translate-y-1/2 rounded-full" style={{ backgroundColor: color }} />
 
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl" style={{ backgroundColor: `${color}20` }}>
+                  <button 
+                    onClick={() => toggleSelect(transaction.id)}
+                    className="flex items-center justify-center h-6 w-6 text-muted-foreground hover:text-cyan-400 transition-colors shrink-0"
+                  >
+                    {isSelected ? (
+                      <CheckSquare className="h-5 w-5 text-cyan-400" />
+                    ) : (
+                      <Square className="h-5 w-5 opacity-50 group-hover:opacity-100" />
+                    )}
+                  </button>
+
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl" style={{ backgroundColor: `${color}20` }}>
                     {isIncome ? (
                       <ArrowDownLeft className="h-5 w-5" style={{ color }} />
                     ) : (
@@ -308,34 +454,34 @@ export function TransactionFilters({ transactions, categories, totalPages, curre
 
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
-                      <p className="font-medium text-foreground">{transaction.category}</p>
+                      <p className="font-medium text-foreground truncate">{transaction.category}</p>
                       <Badge
                         variant="outline"
-                        className={cn('text-xs', isIncome ? 'border-emerald-500/30 text-emerald-400' : 'border-red-500/30 text-red-400')}
+                        className={cn('text-xs shrink-0', isIncome ? 'border-emerald-500/30 text-emerald-400' : 'border-red-500/30 text-red-400')}
                       >
                         {isIncome ? 'Income' : 'Expense'}
                       </Badge>
                     </div>
                     <div className="flex items-center gap-2 mt-1 text-sm text-muted-foreground">
-                      <Calendar className="h-3 w-3" />
-                      {formatDate(transaction.date)}
+                      <Calendar className="h-3 w-3 shrink-0" />
+                      <span className="shrink-0">{formatDate(transaction.date)}</span>
                       {transaction.note && (
                         <>
-                          <span>-</span>
+                          <span className="shrink-0">-</span>
                           <span className="truncate max-w-48">{transaction.note}</span>
                         </>
                       )}
                     </div>
                   </div>
 
-                  <div className="text-right">
+                  <div className="text-right shrink-0">
                     <p className="text-lg font-semibold" style={{ color: isIncome ? '#10b981' : '#ef4444' }}>
                       {isIncome ? '+' : '-'}
                       {formatCurrency(transaction.amount)}
                     </p>
                   </div>
 
-                  <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
                     <Link href={`/add-transaction?id=${transaction.id}`}>
                       <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-foreground">
                         <Edit className="h-4 w-4" />
@@ -402,7 +548,6 @@ export function TransactionFilters({ transactions, categories, totalPages, curre
               })}
             </div>
             
-            {/* Mobile simplified view */}
             <div className="flex items-center px-3 sm:hidden text-sm font-medium">
               {currentPage} / {totalPages}
             </div>
@@ -430,8 +575,8 @@ export function TransactionFilters({ transactions, categories, totalPages, curre
             <Button variant="ghost" onClick={() => setDeleteDialog({ open: false, id: null })} className="text-muted-foreground">
               Cancel
             </Button>
-            <Button variant="destructive" onClick={handleDelete} disabled={isDeleting} className="bg-red-600 hover:bg-red-700">
-              {isDeleting ? 'Deleting...' : 'Delete'}
+            <Button variant="destructive" onClick={handleDelete} className="bg-red-600 hover:bg-red-700">
+              Delete
             </Button>
           </DialogFooter>
         </DialogContent>

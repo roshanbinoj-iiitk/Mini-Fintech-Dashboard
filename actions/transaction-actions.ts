@@ -242,6 +242,24 @@ export async function deleteTransaction(id: string) {
   }
 }
 
+export async function deleteManyTransactions(ids: string[]) {
+  try {
+    await connectToDatabase();
+
+    await Transaction.deleteMany({ _id: { $in: ids } });
+
+    revalidatePath('/transactions');
+    revalidatePath('/dashboard');
+    revalidatePath('/analytics');
+    revalidatePath('/insights');
+
+    return { success: true };
+  } catch (error) {
+    console.error('Error deleting multiple transactions:', error);
+    return { success: false, error: 'Failed to delete multiple transactions' };
+  }
+}
+
 export async function seedDatabase() {
   try {
     await connectToDatabase();
