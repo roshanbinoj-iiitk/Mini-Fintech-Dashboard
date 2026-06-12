@@ -2,8 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { PieChart, Pie, Cell, ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
-import { Transaction, categoryColors } from '@/types/transaction';
-import { getCategoryBreakdown, getMonthlySpending, getLargestIncome, getLargestExpense, calculateTotalIncome, calculateTotalExpense } from '@/lib/calculations';
+import { CategoryData, MonthlyData, Transaction } from '@/types/transaction';
 import { formatCurrency, formatMonth } from '@/lib/utils';
 import { BentoCard, BentoGrid } from '@/components/aceternity/bento-grid';
 import { TrendingUp, TrendingDown, IndianRupee, PiggyBank } from 'lucide-react';
@@ -11,19 +10,25 @@ import { useTheme } from 'next-themes';
 import { CountUp } from '@/components/dashboard/count-up';
 
 interface AnalyticsChartsProps {
-  transactions: Transaction[];
+  categoryData: CategoryData[];
+  monthlyData: MonthlyData[];
+  largestIncome: Transaction | null;
+  largestExpense: Transaction | null;
+  totalExpense: number;
+  totalIncome: number;
 }
 
-export function AnalyticsCharts({ transactions }: AnalyticsChartsProps) {
+export function AnalyticsCharts({
+  categoryData,
+  monthlyData,
+  largestIncome,
+  largestExpense,
+  totalExpense,
+  totalIncome,
+}: AnalyticsChartsProps) {
   const { theme } = useTheme();
   const isDark = theme !== 'light';
-  const categoryData = getCategoryBreakdown(transactions);
-  const monthlyData = getMonthlySpending(transactions);
-  const largestIncome = getLargestIncome(transactions);
-  const largestExpense = getLargestExpense(transactions);
 
-  const totalExpense = calculateTotalExpense(transactions);
-  const totalIncome = calculateTotalIncome(transactions);
   const averageMonthlyExpense = monthlyData.length > 0 ? monthlyData.reduce((sum, m) => sum + m.expense, 0) / monthlyData.length : 0;
 
   return (

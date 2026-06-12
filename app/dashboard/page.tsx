@@ -1,18 +1,18 @@
 import { Suspense } from 'react';
-import { getTransactions } from '@/actions/transaction-actions';
+import { getDashboardData } from '@/lib/data';
 import { DashboardContent } from '@/components/dashboard/dashboard-content';
 import { LoadingDashboard } from '@/components/dashboard/loading-dashboard';
 import { GridBackground } from '@/components/aceternity/grid-background';
 import { SeedButton } from '@/components/seed-button';
 
 export default async function DashboardPage() {
-  const transactions = await getTransactions();
+  const data = await getDashboardData();
 
   return (
     <div className="min-h-screen pt-24 pb-12">
       <GridBackground className="fixed inset-0" />
       <div className="relative z-10 mx-auto max-w-7xl px-4">
-        {transactions.length === 0 ? (
+        {data.isEmpty ? (
           <div className="flex flex-col items-center justify-center py-20 text-center">
             <div className="rounded-3xl border border-border bg-card/80 p-12 backdrop-blur-sm max-w-lg">
               <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-cyan-500/20 to-blue-500/20">
@@ -36,7 +36,15 @@ export default async function DashboardPage() {
           </div>
         ) : (
           <Suspense fallback={<LoadingDashboard />}>
-            <DashboardContent transactions={transactions} />
+            <DashboardContent 
+              totalIncome={data.totalIncome}
+              totalExpense={data.totalExpense}
+              netBalance={data.netBalance}
+              recentTransactions={data.recentTransactions}
+              monthComparison={data.monthComparison}
+              topCategory={data.topCategory}
+              transactionCount={data.transactionCount}
+            />
           </Suspense>
         )}
       </div>

@@ -7,20 +7,27 @@ import { StatCard } from './stat-card';
 import { RecentTransactions } from './recent-transactions';
 import { BentoCard, BentoGrid } from '@/components/aceternity/bento-grid';
 import { CountUp } from './count-up';
-import { calculateTotalIncome, calculateTotalExpense, getRecentTransactions, compareMonths, getTopSpendingCategoryThisMonth } from '@/lib/calculations';
 import { formatCurrency } from '@/lib/utils';
 
 interface DashboardContentProps {
-  transactions: Transaction[];
+  totalIncome: number;
+  totalExpense: number;
+  netBalance: number;
+  recentTransactions: Transaction[];
+  monthComparison: { currentMonth: number; previousMonth: number; change: number };
+  topCategory: string | null;
+  transactionCount: number;
 }
 
-export function DashboardContent({ transactions }: DashboardContentProps) {
-  const totalIncome = calculateTotalIncome(transactions);
-  const totalExpense = calculateTotalExpense(transactions);
-  const netBalance = totalIncome - totalExpense;
-  const recentTransactions = getRecentTransactions(transactions, 5);
-  const monthComparison = compareMonths(transactions);
-  const topCategory = getTopSpendingCategoryThisMonth(transactions);
+export function DashboardContent({ 
+  totalIncome, 
+  totalExpense, 
+  netBalance, 
+  recentTransactions, 
+  monthComparison, 
+  topCategory, 
+  transactionCount 
+}: DashboardContentProps) {
 
   return (
     <div className="space-y-8">
@@ -29,7 +36,7 @@ export function DashboardContent({ transactions }: DashboardContentProps) {
           <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
           <p className="text-muted-foreground">Welcome back! Here&apos;s your financial overview.</p>
         </div>
-        <div className="text-sm text-muted-foreground">{transactions.length} transactions recorded</div>
+        <div className="text-sm text-muted-foreground">{transactionCount} transactions recorded</div>
       </div>
 
       <div id="tour-dashboard-metrics" className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">

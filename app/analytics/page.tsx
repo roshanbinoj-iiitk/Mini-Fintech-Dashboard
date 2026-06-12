@@ -1,5 +1,5 @@
 import { Suspense } from 'react';
-import { getTransactions } from '@/actions/transaction-actions';
+import { getAnalyticsData } from '@/lib/data';
 import { AnalyticsCharts } from '@/components/charts/analytics-charts';
 import { GridBackground } from '@/components/aceternity/grid-background';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -24,7 +24,7 @@ function LoadingAnalytics() {
 }
 
 export default async function AnalyticsPage() {
-  const transactions = await getTransactions();
+  const data = await getAnalyticsData();
 
   return (
     <div className="min-h-screen pt-24 pb-12">
@@ -36,7 +36,14 @@ export default async function AnalyticsPage() {
         </div>
 
         <Suspense fallback={<LoadingAnalytics />}>
-          <AnalyticsCharts transactions={transactions} />
+          <AnalyticsCharts 
+            categoryData={data.categoryData}
+            monthlyData={data.monthlyData}
+            largestIncome={data.largestIncome}
+            largestExpense={data.largestExpense}
+            totalExpense={data.totalExpense}
+            totalIncome={data.totalIncome}
+          />
         </Suspense>
       </div>
     </div>
