@@ -49,7 +49,7 @@ export function MovingBorderButton({
     <MovingBorder containerClassName={cn('inline-flex', className)}>
       <motion.button
         onClick={onClick}
-        className="group relative inline-flex items-center gap-2 rounded-2xl px-8 py-4 text-base font-semibold text-foreground transition-colors duration-200 hover:bg-zinc-800"
+        className="group relative inline-flex items-center gap-2 rounded-2xl px-8 py-4 text-base font-semibold text-foreground transition-colors duration-200 hover:bg-secondary"
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
       >

@@ -31,7 +31,7 @@ export default function RootLayout({
       className={`${fontSans.variable} ${fontMono.variable} font-sans h-full antialiased`}
       suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col bg-zinc-950">
+      <body className="min-h-full flex flex-col bg-background text-foreground transition-colors duration-300">
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
           <TooltipProvider>
             <FloatingNavbar />

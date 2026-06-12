@@ -43,9 +43,9 @@ export function FloatingNavbar() {
         <motion.div
           className={cn(
             'relative flex items-center gap-1 rounded-full px-2 py-2',
-            'bg-zinc-900/80 backdrop-blur-xl border border-white/10',
-            'shadow-2xl shadow-black/50 transition-all duration-300',
-            scrolled && 'bg-zinc-900/95 border-white/20'
+            'bg-background/80 backdrop-blur-xl border border-border/50',
+            'shadow-2xl shadow-black/10 dark:shadow-black/50 transition-all duration-300',
+            scrolled && 'bg-background/95 border-border'
           )}
         >
           <div className="absolute -inset-2 rounded-full bg-gradient-to-r from-cyan-500/20 via-blue-500/20 to-transparent opacity-50 blur-xl" />
@@ -57,10 +57,10 @@ export function FloatingNavbar() {
                 <span className="text-sm font-bold text-white">₹</span>
               </div>
             </div>
-            <span className="font-semibold text-white">FinTrack</span>
+            <span className="font-semibold text-foreground">FinTrack</span>
           </Link>
 
-          <div className="mx-2 h-6 w-px bg-white/10" />
+          <div className="mx-2 h-6 w-px bg-border" />
 
           {navItems.map((item) => (
             <Link key={item.href} href={item.href}>
@@ -68,8 +68,8 @@ export function FloatingNavbar() {
                 className={cn(
                   'relative flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-colors',
                   pathname === item.href
-                    ? 'text-white'
-                    : 'text-zinc-400 hover:text-white hover:bg-white/5'
+                    ? 'text-foreground'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-secondary/50'
                 )}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
@@ -87,7 +87,7 @@ export function FloatingNavbar() {
             </Link>
           ))}
 
-          <div className="mx-2 h-6 w-px bg-white/10" />
+          <div className="mx-2 h-6 w-px bg-border" />
 
           <Link href="/add-transaction">
             <motion.button
@@ -102,7 +102,7 @@ export function FloatingNavbar() {
 
           <button
             onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-            className="relative z-10 ml-2 rounded-full p-2 text-zinc-400 hover:text-white hover:bg-white/5 transition-colors"
+            className="relative z-10 ml-2 rounded-full p-2 text-muted-foreground hover:text-foreground hover:bg-secondary/50 transition-colors"
           >
             {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
           </button>
@@ -119,7 +119,7 @@ export function FloatingNavbar() {
                 <span className="text-sm font-bold text-white">₹</span>
               </div>
             </div>
-            <span className="font-semibold text-white">FinTrack</span>
+            <span className="font-semibold text-foreground">FinTrack</span>
           </Link>
 
           <div className="flex items-center gap-2">
@@ -132,11 +132,11 @@ export function FloatingNavbar() {
 
             <Sheet>
               <SheetTrigger>
-                <Button variant="ghost" size="icon" className="text-white">
+                <Button variant="ghost" size="icon" className="text-foreground">
                   <Menu className="h-5 w-5" />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-72 bg-zinc-900 border-white/10">
+              <SheetContent side="right" className="w-72 bg-background border-border">
                 <div className="flex flex-col gap-4 mt-8">
                   {navItems.map((item) => (
                     <Link key={item.href} href={item.href}>
@@ -144,8 +144,8 @@ export function FloatingNavbar() {
                         className={cn(
                           'flex items-center gap-3 rounded-lg px-4 py-3 text-base font-medium transition-colors',
                           pathname === item.href
-                            ? 'bg-gradient-to-r from-cyan-500/20 to-blue-500/20 text-white border border-cyan-500/30'
-                            : 'text-zinc-400 hover:text-white hover:bg-white/5'
+                            ? 'bg-gradient-to-r from-cyan-500/10 to-blue-500/10 dark:from-cyan-500/20 dark:to-blue-500/20 text-cyan-600 dark:text-cyan-400 border border-cyan-500/30'
+                            : 'text-muted-foreground hover:text-foreground hover:bg-secondary/50'
                         )}
                         whileTap={{ scale: 0.98 }}
                       >
@@ -154,10 +154,10 @@ export function FloatingNavbar() {
                       </motion.div>
                     </Link>
                   ))}
-                  <div className="h-px bg-white/10 my-4" />
+                  <div className="h-px bg-border my-4" />
                   <button
                     onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-                    className="flex items-center gap-3 rounded-lg px-4 py-3 text-base font-medium text-zinc-400 hover:text-white hover:bg-white/5 transition-colors"
+                    className="flex items-center gap-3 rounded-lg px-4 py-3 text-base font-medium text-muted-foreground hover:text-foreground hover:bg-secondary/50 transition-colors"
                   >
                     {theme === 'dark' ? (
                       <>

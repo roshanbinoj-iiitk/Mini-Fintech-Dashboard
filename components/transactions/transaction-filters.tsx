@@ -116,7 +116,7 @@ export function TransactionFilters({ transactions }: TransactionFiltersProps) {
             variant="outline"
             onClick={() => setShowFilters(!showFilters)}
             className={cn(
-              'border-border bg-card/50 text-muted-foreground hover:text-foreground hover:bg-zinc-800',
+              'border-border bg-card/50 text-muted-foreground hover:text-foreground hover:bg-secondary/80',
               showFilters && 'border-cyan-500/50 text-cyan-400'
             )}
           >
@@ -251,7 +251,7 @@ export function TransactionFilters({ transactions }: TransactionFiltersProps) {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, x: -100 }}
                   transition={{ duration: 0.2, delay: index * 0.02 }}
-                  className="group relative flex items-center gap-4 rounded-2xl border border-border/50 bg-card/50 p-4 backdrop-blur-sm transition-all hover:border-white/10 hover:bg-zinc-900/80"
+                  className="group relative flex items-center gap-4 rounded-2xl border border-border/50 bg-card/50 p-4 backdrop-blur-sm transition-all hover:border-border hover:bg-secondary/50"
                 >
                   <div className="absolute left-0 top-1/2 h-8 w-1 -translate-y-1/2 rounded-full" style={{ backgroundColor: color }} />
 

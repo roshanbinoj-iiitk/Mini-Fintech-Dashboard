@@ -149,7 +149,7 @@ export function TransactionForm() {
                 className={`rounded-xl border p-4 text-center transition-all ${
                   type === 'expense'
                     ? 'border-red-500/50 bg-red-500/10 text-red-400'
-                    : 'border-border bg-muted text-muted-foreground hover:bg-zinc-700'
+                    : 'border-border bg-muted text-muted-foreground hover:bg-secondary/80'
                 }`}
               >
                 <ArrowLeft className="mx-auto h-5 w-5 rotate-180" />
@@ -165,7 +165,7 @@ export function TransactionForm() {
                 className={`rounded-xl border p-4 text-center transition-all ${
                   type === 'income'
                     ? 'border-emerald-500/50 bg-emerald-500/10 text-emerald-400'
-                    : 'border-border bg-muted text-muted-foreground hover:bg-zinc-700'
+                    : 'border-border bg-muted text-muted-foreground hover:bg-secondary/80'
                 }`}
               >
                 <ArrowLeft className="mx-auto h-5 w-5" />
@@ -198,7 +198,7 @@ export function TransactionForm() {
               </SelectTrigger>
               <SelectContent className="bg-muted border-border">
                 {availableCategories.map((cat) => (
-                  <SelectItem key={cat} value={cat} className="text-foreground hover:bg-zinc-700">
+                  <SelectItem key={cat} value={cat} className="text-foreground hover:bg-secondary/80">
                     {cat}
                   </SelectItem>
                 ))}
@@ -221,7 +221,7 @@ export function TransactionForm() {
           <Button
             type="submit"
             disabled={isSubmitting}
-            className={`w-full py-6 text-lg font-medium ${
+            className={`w-full py-6 text-lg font-medium text-white ${
               type === 'income'
                 ? 'bg-gradient-to-r from-emerald-500 to-green-600 hover:shadow-lg hover:shadow-emerald-500/25'
                 : 'bg-gradient-to-r from-cyan-500 to-blue-600 hover:shadow-lg hover:shadow-cyan-500/25'

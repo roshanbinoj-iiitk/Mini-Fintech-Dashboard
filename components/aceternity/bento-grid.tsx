@@ -35,7 +35,7 @@ export function BentoCard({ children, className }: BentoCardProps) {
       viewport={{ once: true }}
       transition={{ duration: 0.5 }}
       className={cn(
-        'group relative overflow-hidden rounded-2xl border border-border bg-zinc-900/70 p-6 backdrop-blur-sm transition-all duration-300 hover:border-white/20',
+        'group relative overflow-hidden rounded-2xl border border-border bg-card/70 p-6 backdrop-blur-sm transition-all duration-300 hover:border-border',
         className
       )}
     >

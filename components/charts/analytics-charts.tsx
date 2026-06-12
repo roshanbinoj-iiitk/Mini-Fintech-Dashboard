@@ -7,6 +7,7 @@ import { getCategoryBreakdown, getMonthlySpending, getLargestTransaction, calcul
 import { formatCurrency, formatMonth } from '@/lib/utils';
 import { BentoCard, BentoGrid } from '@/components/aceternity/bento-grid';
 import { TrendingUp, TrendingDown, DollarSign, PiggyBank } from 'lucide-react';
+import { useTheme } from 'next-themes';
 import { CountUp } from '@/components/dashboard/count-up';
 
 interface AnalyticsChartsProps {
@@ -14,6 +15,8 @@ interface AnalyticsChartsProps {
 }
 
 export function AnalyticsCharts({ transactions }: AnalyticsChartsProps) {
+  const { theme } = useTheme();
+  const isDark = theme !== 'light';
   const categoryData = getCategoryBreakdown(transactions);
   const monthlyData = getMonthlySpending(transactions);
   const largestTransaction = getLargestTransaction(transactions);
@@ -46,10 +49,10 @@ export function AnalyticsCharts({ transactions }: AnalyticsChartsProps) {
                   </Pie>
                   <Tooltip
                     contentStyle={{
-                      backgroundColor: '#18181b',
-                      border: '1px solid rgba(255,255,255,0.1)',
+                      backgroundColor: isDark ? '#18181b' : '#ffffff',
+                      border: isDark ? '1px solid rgba(255,255,255,0.1)' : '1px solid rgba(0,0,0,0.1)',
                       borderRadius: '8px',
-                      color: '#fff',
+                      color: isDark ? '#fff' : '#000',
                     }}
                     formatter={(value) => formatCurrency(value as number)}
                   />
@@ -87,7 +90,7 @@ export function AnalyticsCharts({ transactions }: AnalyticsChartsProps) {
                     <stop offset="95%" stopColor="#ef4444" stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#27272a" />
+                <CartesianGrid strokeDasharray="3 3" stroke={isDark ? "#27272a" : "#e4e4e7"} />
                 <XAxis
                   dataKey="month"
                   tick={{ fill: '#71717a', fontSize: 12 }}
@@ -99,10 +102,10 @@ export function AnalyticsCharts({ transactions }: AnalyticsChartsProps) {
                 <YAxis tick={{ fill: '#71717a', fontSize: 12 }} tickFormatter={(value) => `₹${(value / 1000).toFixed(0)}k`} />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: '#18181b',
-                    border: '1px solid rgba(255,255,255,0.1)',
+                    backgroundColor: isDark ? '#18181b' : '#ffffff',
+                    border: isDark ? '1px solid rgba(255,255,255,0.1)' : '1px solid rgba(0,0,0,0.1)',
                     borderRadius: '8px',
-                    color: '#fff',
+                    color: isDark ? '#fff' : '#000',
                   }}
                   formatter={(value) => formatCurrency(value as number)}
                   labelFormatter={(label) => formatMonth(label + '-01')}

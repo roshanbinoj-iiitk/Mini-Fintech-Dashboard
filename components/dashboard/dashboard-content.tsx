@@ -91,7 +91,7 @@ export function DashboardContent({ transactions }: DashboardContentProps) {
                 <CountUp end={monthComparison.previousMonth} prefix="₹" decimals={0} />
               </span>
             </div>
-            <div className="h-px bg-white/10 my-4" />
+            <div className="h-px bg-border my-4" />
             <div className="flex items-center justify-between">
               <span className="text-muted-foreground">Savings Rate</span>
               <span

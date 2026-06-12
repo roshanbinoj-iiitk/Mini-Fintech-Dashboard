@@ -15,7 +15,7 @@ export function LoadingDashboard() {
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
         {[1, 2, 3, 4].map((i) => (
-          <div key={i} className="rounded-3xl border border-border bg-zinc-900/70 p-6">
+          <div key={i} className="rounded-3xl border border-border bg-card/70 p-6">
             <div className="flex items-start justify-between">
               <Skeleton className="h-11 w-11 rounded-xl bg-muted" />
               <Skeleton className="h-6 w-16 rounded-full bg-muted" />
@@ -27,7 +27,7 @@ export function LoadingDashboard() {
       </div>
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-        <div className="md:col-span-2 rounded-2xl border border-border bg-zinc-900/70 p-6">
+        <div className="md:col-span-2 rounded-2xl border border-border bg-card/70 p-6">
           <Skeleton className="h-6 w-40 bg-muted" />
           <div className="mt-6 space-y-3">
             {[1, 2, 3, 4, 5].map((i) => (
@@ -35,7 +35,7 @@ export function LoadingDashboard() {
             ))}
           </div>
         </div>
-        <div className="rounded-2xl border border-border bg-zinc-900/70 p-6">
+        <div className="rounded-2xl border border-border bg-card/70 p-6">
           <Skeleton className="h-6 w-24 bg-muted" />
           <div className="mt-6 space-y-4">
             {[1, 2, 3, 4].map((i) => (

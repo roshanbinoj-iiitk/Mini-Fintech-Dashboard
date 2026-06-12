@@ -84,7 +84,7 @@ export function InsightsDisplay({ transactions }: InsightsDisplayProps) {
               >
                 <div className={cn('rounded-2xl border bg-gradient-to-br p-6', styles.border, styles.bg)}>
                   <div className="flex items-start gap-4">
-                    <div className="rounded-xl bg-white/10 p-3">
+                    <div className="rounded-xl bg-secondary p-3">
                       <Icon className={cn('h-5 w-5', styles.icon)} />
                     </div>
                     <div className="flex-1">
