@@ -39,23 +39,48 @@ export function AnalyticsCharts({ transactions }: AnalyticsChartsProps) {
                     data={categoryData}
                     cx="50%"
                     cy="50%"
-                    innerRadius={60}
+                    innerRadius={65}
                     outerRadius={100}
-                    paddingAngle={2}
+                    paddingAngle={4}
                     dataKey="amount"
+                    nameKey="category"
+                    stroke="none"
                   >
                     {categoryData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
+                      <Cell 
+                        key={`cell-${index}`} 
+                        fill={entry.color} 
+                        stroke={isDark ? '#09090b' : '#ffffff'} 
+                        strokeWidth={2} 
+                        className="transition-all duration-300 hover:opacity-80"
+                      />
                     ))}
                   </Pie>
                   <Tooltip
-                    contentStyle={{
-                      backgroundColor: isDark ? '#18181b' : '#ffffff',
-                      border: isDark ? '1px solid rgba(255,255,255,0.1)' : '1px solid rgba(0,0,0,0.1)',
-                      borderRadius: '8px',
-                      color: isDark ? '#fff' : '#000',
+                    content={({ active, payload }) => {
+                      if (active && payload && payload.length) {
+                        const data = payload[0].payload;
+                        return (
+                          <div className="rounded-lg border border-border bg-background p-3 shadow-md">
+                            <div className="flex items-center gap-2 mb-2">
+                              <div className="h-3 w-3 rounded-full shadow-sm" style={{ backgroundColor: data.color }} />
+                              <p className="font-semibold text-foreground">{data.category}</p>
+                            </div>
+                            <div className="flex flex-col gap-1">
+                              <p className="text-sm text-muted-foreground flex justify-between gap-4">
+                                <span>Amount:</span> 
+                                <span className="font-medium text-foreground">{formatCurrency(data.amount)}</span>
+                              </p>
+                              <p className="text-sm text-muted-foreground flex justify-between gap-4">
+                                <span>Share:</span> 
+                                <span className="font-medium text-foreground">{data.percentage.toFixed(1)}%</span>
+                              </p>
+                            </div>
+                          </div>
+                        );
+                      }
+                      return null;
                     }}
-                    formatter={(value) => formatCurrency(value as number)}
                   />
                 </PieChart>
               </ResponsiveContainer>
