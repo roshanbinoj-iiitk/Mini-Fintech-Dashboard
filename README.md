@@ -180,7 +180,7 @@ types/
 
 1. Push code to GitHub
 2. Import project on [Vercel](https://vercel.com)
-3. Add `MONGODB_URI` to Environment Variables
+3. Add `MONGODB_URI` and `GROQ_API_KEY` to Environment Variables
 4. Deploy
 
 ## Performance
